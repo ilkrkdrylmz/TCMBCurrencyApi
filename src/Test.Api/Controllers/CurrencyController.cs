@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Data;
+using System.Globalization;
 using System.Xml;
 using Test.Api.Models.Currency;
 
@@ -25,6 +26,8 @@ public class CurrencyController : ControllerBase
             Currencies = new()
         };
 
+        CultureInfo trCull = new CultureInfo("tr-TR");
+
         try
         {
             XmlTextReader rdr = new XmlTextReader("https://www.tcmb.gov.tr/kurlar/today.xml");
@@ -46,8 +49,8 @@ public class CurrencyController : ControllerBase
                         response.Currencies.Add(new GetCurrencyResponse
                         {
                             Code = item,
-                            SalePrice = Convert.ToDecimal(dt.Rows[i][4].ToString().Replace(".", ",")),
-                            PurchasePrice = Convert.ToDecimal(dt.Rows[i][3].ToString().Replace(".", ","))
+                            SalePrice = decimal.Parse(dt.Rows[i][4].ToString().Replace(".",","), NumberStyles.Any, trCull),
+                            PurchasePrice = decimal.Parse(dt.Rows[i][3].ToString().Replace(".", ","), NumberStyles.Any, trCull),
                         });
                     }
                 }
