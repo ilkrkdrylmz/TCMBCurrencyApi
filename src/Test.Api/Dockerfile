@@ -3,6 +3,11 @@ WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
+RUN apt-get update
+RUN apt-get install tzdata -y
+ENV TZ=Europe/Istanbul
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && dpkg-reconfigure -f noninteractive tzdata
+
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 COPY . .
 WORKDIR "/src/Test.Api/"
